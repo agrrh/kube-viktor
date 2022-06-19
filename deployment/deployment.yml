@@ -17,6 +17,8 @@ spec:
       labels:
         app.kubernetes.io/name: kube-viktor
     spec:
+      serviceAccountName: kube-viktor
+
       containers:
         - name: controller
 
