@@ -1,0 +1,66 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-viktor
+  namespace: kube-viktor
+  labels:
+    app.kubernetes.io/name: kube-viktor
+spec:
+  replicas: 1  # Not able to work in >1 replicas yet
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kube-viktor
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kube-viktor
+    spec:
+      containers:
+        - name: controller
+
+          image: agrrh/kube-viktor
+          imagePullPolicy: IfNotPresent
+
+          env:
+            - name: APP_LOG_VERBOSE
+              value: ""  # Set any value to enable INFO logs
+
+            - name: APP_LOG_DEBUG
+              value: ""  # Set any value to enable DEBUG logs
+
+            - name: APP_RUN_ONCE
+              value: ""  # Set any value to enable
+
+            - name: APP_LOOP_DELAY
+              value: "5"
+
+            - name: APP_KUBECONFIG_FILE
+              value: ""  # Not for in-cluster mode
+
+            - name: APP_LABELS_SELECTOR  # Should be valid json dict
+              value: >
+                {
+                  "kube-viktor.agrrh.com/enabled": "true"
+                }
+
+            - name: APP_HANDLE_ACTION
+              value: log
+
+            - name: APP_PROM_ADDRESS
+              value: http://prometheus.metrics.svc:9090/api/v1/query  # Change me!
+
+            - name: APP_PROM_QUERY
+              value: ""  # See kube-viktor/pod_metrics_analyzer.py for example
+
+            - name: APP_PROM_QUERY_THRESHOLD
+              value: "0.8"  # Perform action on this usage / limit ration
+
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"

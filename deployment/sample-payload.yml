@@ -1,0 +1,43 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-payload
+  namespace: kube-viktor
+  labels:
+    app.kubernetes.io/name: sample-payload
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: sample-payload
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: sample-payload
+        kube-viktor.agrrh.com/enabled: "true"
+      annotations:
+        kube-viktor.agrrh.com/handle-action: evict
+        kube-viktor.agrrh.com/metric-threshold: "0.6"
+    spec:
+      containers:
+        - name: stress
+
+          image: progrium/stress
+          imagePullPolicy: IfNotPresent
+
+          args: ["--vm", "3", "--vm-bytes", "128M", "--vm-keep"]
+
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "100m"
+
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sleep", "5"]
