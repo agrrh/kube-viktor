@@ -7,15 +7,18 @@ metadata:
   namespace: kube-viktor
   labels:
     app.kubernetes.io/name: kube-viktor
+
 spec:
   replicas: 1  # Not able to work in >1 replicas yet
   selector:
     matchLabels:
       app.kubernetes.io/name: kube-viktor
+
   template:
     metadata:
       labels:
         app.kubernetes.io/name: kube-viktor
+
     spec:
       serviceAccountName: kube-viktor
 
