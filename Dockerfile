@@ -14,5 +14,5 @@ WORKDIR /opt/kube-viktor
 
 RUN chmod +x /opt/kube-viktor/main.py
 
-ENTRYPOINT ["/opt/kube-viktor/main.py"]
+ENTRYPOINT ["/usr/local/bin/python", "/opt/kube-viktor/main.py"]
 CMD [""]
