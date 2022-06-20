@@ -1,0 +1,80 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-viktor
+  namespace: kube-viktor
+  labels:
+    {{- include "kube-viktor.labels" . | nindent 4 }}
+
+spec:
+  replicas: {{ .Values.image.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "kube-viktor.selectorLabels" . | nindent 6 }}
+
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "kube-viktor.selectorLabels" . | nindent 8 }}
+
+    spec:
+      serviceAccountName: {{ include "kube-viktor.serviceAccountName" . }}
+
+      containers:
+        - name: controller
+
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          env:
+            - name: APP_LOG_VERBOSE
+              value: {{ .Values.app.logVerbose | quote }}
+
+            - name: APP_LOG_DEBUG
+              value: {{ .Values.app.logDebug | quote }}
+
+            - name: APP_RUN_ONCE
+              value: {{ .Values.app.runOnce | quote }}
+
+            - name: APP_LOOP_DELAY
+              value: {{ .Values.app.loopDelay | quote }}
+
+            - name: APP_KUBECONFIG_FILE
+              value: ""  # Not for in-cluster mode
+
+            - name: APP_LABELS_SELECTOR
+              value: >{{ .Values.app.labelsSelector | nindent 16 }}
+
+            - name: APP_HANDLE_ACTION
+              value: {{ .Values.app.handleAction | quote }}
+
+            - name: APP_PROM_ADDRESS
+              value: {{ .Values.app.promAddress | quote }}
+
+            - name: APP_PROM_QUERY
+              value: {{ .Values.app.promQuery | quote }}
+
+            - name: APP_PROM_QUERY_THRESHOLD
+              value: {{ .Values.app.promQueryThreshold | quote }}
+
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

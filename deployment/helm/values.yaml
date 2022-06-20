@@ -1,0 +1,75 @@
+# Default values for kube-viktor.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+app:
+  # Set any value to enable INFO logs
+  logVerbose: ""
+
+  # Set any value to enable DEBUG logs
+  logDebug: ""
+
+  # Set any value to enable
+  runOnce: ""
+
+  loopDelay: 5
+
+  # Should be valid json dict
+  labelsSelector: >-
+    {
+      "kube-viktor.agrrh.com/enabled": "true"
+    }
+
+  handleAction: log
+
+  # Change to your in-cluster prometheus service
+  promAddress: http://prometheus.metrics.svc:9090/api/v1/query
+
+  # See kube-viktor/pod_metrics_analyzer.py for example
+  promQuery: ""
+
+  # Perform action on this usage / limit ration
+  promQueryThreshold: "0.8"
+
+# Not able to work in >1 replicas yet
+replicaCount: 1
+
+image:
+  repository: agrrh/kube-viktor
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "0.1.0"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+resources:
+  requests:
+    memory: "128Mi"
+    cpu: "100m"
+  limits:
+    memory: "128Mi"
+    cpu: "100m"
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
