@@ -7,16 +7,16 @@ cd deployment
 
 # new
 helm repo index \
-  --url https://agrrh.github.io/kube-viktor/deployment/ \
+  --url https://agrrh.github.io/kube-viktor/deployment/helm/ \
   ./helm
 
 # update
 helm repo index \
-  --url https://agrrh.github.io/kube-viktor/deployment/ \
+  --url https://agrrh.github.io/kube-viktor/deployment/helm/ \
   --merge index.yaml \
   ./helm
 
-mv ./helm/index.yaml ./
+mv -f ./helm/index.yaml ./
 ```
 
 ### Usage

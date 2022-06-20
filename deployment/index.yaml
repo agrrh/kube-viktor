@@ -3,12 +3,12 @@ entries:
   kube-viktor:
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2022-06-21T00:21:40.814686356+03:00"
+    created: "2022-06-21T00:25:12.491503613+03:00"
     description: A Helm chart for Kubernetes
     digest: ba181113904e1bd2c36b929d5cfa69054585808b27538ec053bb477dfafb9e9e
     name: kube-viktor
     type: application
     urls:
-    - https://agrrh.github.io/kube-viktor/deployment/charts/kube-viktor-0.1.0.tgz
+    - https://agrrh.github.io/kube-viktor/deployment/helm/charts/kube-viktor-0.1.0.tgz
     version: 0.1.0
-generated: "2022-06-21T00:21:40.814379384+03:00"
+generated: "2022-06-21T00:25:12.491205757+03:00"
