@@ -3,12 +3,20 @@
 ### How to update
 
 ```
-cd deployment/helm
+cd deployment
 
+# new
+helm repo index \
+  --url https://agrrh.github.io/kube-viktor/deployment/ \
+  ./helm
+
+# update
 helm repo index \
   --url https://agrrh.github.io/kube-viktor/deployment/ \
   --merge index.yaml \
-  ./
+  ./helm
+
+mv ./helm/index.yaml ./
 ```
 
 ### Usage
