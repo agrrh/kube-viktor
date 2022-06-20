@@ -1,4 +1,4 @@
-# kube-viktor quickstart
+# Quickstart
 
 ### Running locally
 
@@ -13,6 +13,25 @@ APP_HANDLE_ACTION=log \
 ### Running inside cluster
 
 ```
-${EDITOR} deployment/deployment.yml
-kubectl apply -f deployment/
+${EDITOR} deployment/kubernetes/deployment.yml
+kubectl apply -f deployment/kubernetes
 ```
+
+### Preparing payload
+
+In this case, you run handle action `evict` when Pod reach `0.8` of memory limit:
+
+```
+metadata:
+  labels:
+    ...
+    kube-viktor.agrrh.com/enabled: "true"
+  annotations:
+    ...
+    kube-viktor.agrrh.com/handle-action: evict
+    kube-viktor.agrrh.com/metric-threshold: "0.8"
+```
+
+In case you're dealing with Deployment, modify `spec.template.metadata` instead.
+
+Also, read more about possible [handle actions](./handle-actions.md).
