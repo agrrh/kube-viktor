@@ -1,8 +1,8 @@
 <!-- TODO: Add logo -->
 
-# kube-viktor: poor man's evictions for Pods which gets close to their limits
+# kube-viktor
 
-kube-victor is dead simple controller to run evctions before OOM gets into business.
+kube-viktor is dead simple controller to run evctions before OOM gets into business.
 
 <!-- TODO: Add shields.io -->
 
