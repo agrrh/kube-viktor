@@ -34,4 +34,17 @@ metadata:
 
 In case you're dealing with Deployment, modify `spec.template.metadata` instead.
 
+### Overriding metrics query
+
+By default, the controller uses the query from `APP_PROM_QUERY` (or the built-in one) to analyze Pod metrics. A Pod can override it with the `kube-viktor.agrrh.com/metric-query` annotation:
+
+```
+metadata:
+  annotations:
+    kube-viktor.agrrh.com/metric-query: >-
+      sum(container_memory_usage_bytes{{namespace="{namespace}",pod="{name}",container!="POD"}}) by (namespace, pod)
+```
+
+The query is formatted the same way as `APP_PROM_QUERY`: `{name}` and `{namespace}` are replaced with Pod values, so PromQL curly braces must be escaped as `{{` and `}}`.
+
 Also, read more about possible [handle actions](./handle-actions.md).
