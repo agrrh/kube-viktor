@@ -30,6 +30,7 @@ class PodMetricsAnalyzer(object):
         logging.info(f"Prometheus query is: {self.prom_query}")
         logging.info(f"Prometheus threshold is: {self.prom_query_threshold}")
 
+    # TODO: Also check query override in Pod owner annotations
     def __annotations_check_override_query(self, pod):
         override_query = (pod.metadata.annotations or {}).get(self.ANNOTATION_QUERY_KEY)
 
