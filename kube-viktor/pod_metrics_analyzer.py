@@ -11,6 +11,7 @@ class PodMetricsAnalyzer(object):
         ) by (namespace, pod)
     """
 
+    ANNOTATION_QUERY_KEY = "kube-viktor.agrrh.com/metric-query"
     ANNOTATION_THRESHOLD_KEY = "kube-viktor.agrrh.com/metric-threshold"
 
     def __init__(
@@ -28,6 +29,17 @@ class PodMetricsAnalyzer(object):
         logging.info(f"Prometheus address is: {self.prom_address}")
         logging.info(f"Prometheus query is: {self.prom_query}")
         logging.info(f"Prometheus threshold is: {self.prom_query_threshold}")
+
+    # TODO: Also check query override in Pod owner annotations
+    def __annotations_check_override_query(self, pod):
+        override_query = (pod.metadata.annotations or {}).get(self.ANNOTATION_QUERY_KEY)
+
+        if not override_query:
+            return self.prom_query
+
+        logging.info(f"Annotation overrides metric query: {override_query}")
+
+        return override_query
 
     def __annotations_check_override_threshold(self, pod):
         override_threshold = pod.metadata.annotations.get(self.ANNOTATION_THRESHOLD_KEY)
@@ -53,10 +65,12 @@ class PodMetricsAnalyzer(object):
     def select_for_eviction(self, pod):
         logging.info(f"Checking metrics for Pod {pod.metadata.namespace}/{pod.metadata.name}")
 
+        prom_query = self.__annotations_check_override_query(pod)
+
         try:
             response = requests.get(
                 self.prom_address,
-                params={"query": self.prom_query.format(name=pod.metadata.name, namespace=pod.metadata.namespace)},
+                params={"query": prom_query.format(name=pod.metadata.name, namespace=pod.metadata.namespace)},
             ).json()
 
             logging.debug(response)
