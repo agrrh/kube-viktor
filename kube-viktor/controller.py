@@ -33,7 +33,7 @@ class Controller(object):
 
     @Timer(name="Loop body", text="{name} took {:.2f}s to complete", logger=logging.warning)
     def loop_body(self, pod_selector, pod_analyzer, pod_evictor):
-        pods = list(pod_selector.get_all_suitable(self.labels_selector))
+        pods = list(pod_selector.get_all_suitable())
         pods_selected = list(filter(pod_analyzer.select_for_eviction, pods))
 
         [pod_evictor.handle(pod) for pod in pods_selected]
@@ -55,6 +55,9 @@ class Controller(object):
         kube_api = client.CoreV1Api()
 
         pod_selector = PodSelector(kube_api=kube_api)
+        pod_selector.subscribe(self.labels_selector)
+        pod_selector.wait_until_ready(timeout=loop_delay)
+
         pod_analyzer = PodMetricsAnalyzer(
             prom_address=self.prom_address, prom_query=self.prom_query, prom_query_threshold=self.prom_query_threshold
         )
